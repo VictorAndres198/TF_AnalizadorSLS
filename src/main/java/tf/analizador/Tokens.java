@@ -25,5 +25,17 @@ public enum Tokens {
     Identificador,
     Numero,
     ERROR,
-    Linea
+    Linea, 
+    /*pendiente agregar:
+    ->
+    ::
+    logic operators(== , <, >, <=, >=)
+    bool operators(&& ||)
+    guarda ( | ) 
+    para input de cadenas ($)
+    brackets ( (, ), [, ], {, }  )
+    para funcion lambda (\)
+    coma(,)
+    comentario(-- sdsdsd)
+    */
 }

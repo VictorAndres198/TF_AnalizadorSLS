@@ -6,7 +6,7 @@ import jflex.exceptions.SilentExit;
 public class Principal {
 
     public static void main(String[] args) {
-        String ruta = "C:/Users/Victor/eclipse-workspace/Eclipse-Java-Enterprise/analizador/src/main/java/tf/analizador/Lexer.flex";
+        String ruta = "C:/Users/Your_User_Name/eclipse-workspace/TF_AnalizadorSLS/src/main/java/tf/analizador/Lexer.flex";
         generarLexer(ruta);
     }
     
