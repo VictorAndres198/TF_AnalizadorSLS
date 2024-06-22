@@ -1,19 +1,32 @@
 package tf.analizador;
 import static tf.analizador.Tokens.*;
+
 %%
+
 %class Lexer
 %type Tokens
 L=[a-zA-Z_]+
 D=[0-9]+
-espacio=[ ,\t,\r]+
+espacio=[ \t]+
+newline=\r|\n|\r\n
+comentario_linea = "--[^\\n]*"
+comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
+
 %{
+	private int indentLevel = 0;
+    private int currentIndent = 0;
+    private boolean newLine = true;
     public String lexeme;
 %}
+
 %%
 
-{espacio}               {}
+
+{newline}               { currentIndent = 0; newLine = true; return Linea; }
+{espacio}               { if (newLine) { currentIndent += yytext().length(); } }
+{comentario_linea}      { /* Comentario de una línea */ }
+{comentario_multilinea} { /* Comentario multilínea */ }
 "//".*                  {}
-\n                      { return Linea; }
 "let"                   { lexeme = yytext(); return Let; }
 "in"                    { lexeme = yytext(); return In; }
 "where"                 { lexeme = yytext(); return Where; }
@@ -37,4 +50,24 @@ espacio=[ ,\t,\r]+
 "^"                     { lexeme = yytext(); return Potencia; }
 {L}({L}|{D})*           { lexeme = yytext(); return Identificador; }
 ("-"{D}+) | {D}+        { lexeme = yytext(); return Numero; }
+"->"        			{ lexeme = yytext(); return Flecha_D; }
+"<-"        			{ lexeme = yytext(); return Flecha_I; }
+"::"        			{ lexeme = yytext(); return DosPuntos_Doble; }
+","        				{ lexeme = yytext(); return Coma; }
+">"    					{ lexeme = yytext(); return Mayor_que; }
+">="    				{ lexeme = yytext(); return Mayor_igual_que; }
+"<"    					{ lexeme = yytext(); return Menor_que; }
+"<="    				{ lexeme = yytext(); return Menor_igual_que; }
+"=="    				{ lexeme = yytext(); return Igual_a; }
+"&&"    				{ lexeme = yytext(); return And; }
+"||"    				{ lexeme = yytext(); return Or; }
+"|"    					{ lexeme = yytext(); return Guarda; }
+"$"    					{ lexeme = yytext(); return Dolar; }
+"\\\\"  				{ lexeme = yytext(); return Lambda; }
+"("    					{ lexeme = yytext(); return Parentesis_a; }
+")"    					{ lexeme = yytext(); return Parentesis_c; }
+"{"    					{ lexeme = yytext(); return Llave_a; }
+"}"    					{ lexeme = yytext(); return Llave_c; }
+"["    					{ lexeme = yytext(); return Corchete_a; }
+"]"    					{ lexeme = yytext(); return Corchete_c; }
 .                       { return ERROR; }

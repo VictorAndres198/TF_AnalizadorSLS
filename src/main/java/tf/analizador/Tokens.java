@@ -24,18 +24,26 @@ public enum Tokens {
     Potencia,
     Identificador,
     Numero,
-    ERROR,
-    Linea, 
-    /*pendiente agregar:
-    ->
-    ::
-    logic operators(== , <, >, <=, >=)
-    bool operators(&& ||)
-    guarda ( | ) 
-    para input de cadenas ($)
-    brackets ( (, ), [, ], {, }  )
-    para funcion lambda (\)
-    coma(,)
-    comentario(-- sdsdsd)
-    */
+    Linea,
+    Flecha_D,  //->
+    Flecha_I, // <-
+    DosPuntos_Doble, //::
+    Coma,
+    Mayor_que,
+    Mayor_igual_que,
+    Menor_que,
+    Menor_igual_que,
+    Igual_a, // (==)
+    And, // (&&)
+    Or, //  (||)
+    Guarda, // ( | )
+    Dolar, // $
+    Lambda, // (\)
+    Parentesis_a,
+    Parentesis_c,
+    Llave_a,
+    Llave_c,
+    Corchete_a,
+    Corchete_c,
+    ERROR
 }
