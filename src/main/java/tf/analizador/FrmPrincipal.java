@@ -254,16 +254,22 @@ public class FrmPrincipal extends JFrame {
 				
 				String ST = txtAnalizar.getText();
 				Sintax s = new Sintax(new tf.analizador.LexerCup(new StringReader(ST)));
-
+				
 				try {
 					s.parse();
 					txtResultado_Sintactico.setText("Analisis realizado correctamente");
 					txtResultado_Sintactico.setForeground(new Color(25, 111, 61));
 				} catch (Exception ex) {
 					Symbol sym = s.getS();
-					txtResultado_Sintactico.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: "
-							+ (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-					txtResultado_Sintactico.setForeground(Color.red);
+					Boolean errorDetectado = s.errorD();
+					if (sym!=null && errorDetectado==true) {
+						txtResultado_Sintactico.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: "
+								+ (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+						txtResultado_Sintactico.setForeground(Color.red);						
+					} else {
+						txtResultado_Sintactico.setText("Analisis realizado correctamente");
+						txtResultado_Sintactico.setForeground(new Color(25, 111, 61));
+					}
 				}
 				 			
 			}

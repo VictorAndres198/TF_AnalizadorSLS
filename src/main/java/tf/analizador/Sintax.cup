@@ -2,30 +2,76 @@ package tf.analizador;
 
 import java_cup.runtime.Symbol;
 
-parser code
-{:
-    private Symbol s;
-    
+parser code {:
+    private Symbol s = null;
+    public boolean errorDetected = false;
+    public boolean parsingCompleted = false;
+
+    @Override
     public void syntax_error(Symbol s){
         this.s = s;
+        if (s.value != null) {
+            System.err.println("Error de sintaxis. Línea: " + (s.left + 1) + " Columna: " + (s.right + 1) + ", Texto: \"" + s.value + "\"");
+            errorDetected = true;
+        } else {
+            errorDetected = false;
+        }
     }
 
     public Symbol getS(){
         return this.s;
     }
+
+    public Boolean errorD(){
+        return errorDetected;
+    }
+
+    @Override
+    public void report_fatal_error(String message, Object info) throws java.lang.Exception {
+        super.report_fatal_error(message, info);
+        System.err.println("==========report_fatal_error==========");
+        System.err.println(message);
+        System.err.println(info);
+    }
+
+    @Override
+    public void done_parsing() {
+        if (!errorDetected) {
+            System.out.println("Análisis sintáctico completado sin errores.");
+        }
+        parsingCompleted = true; // Set the parsing completed flag
+        System.err.println("==========done_parsing()==========");
+        System.err.println("errorDetected es: " + errorDetected);
+        System.err.println("parsingCompleted es: " + parsingCompleted);        
+    }
+
+    public boolean isParsingCompleted() {
+        System.err.println("==========isParsingCompleted()==========");  
+        System.err.println("parsingCompleted es: " + parsingCompleted);  
+        return parsingCompleted;
+    }
 :};
 
+// Terminals (tokens returned by the scanner)
 terminal Let, In, Where, If, Then, Else, Case, Of, Data, Type, Int, Double, Char, Bool,
     Igual, Suma, Resta, Multiplicacion, Division, Modulo, Potencia,
     Identificador, Numero, Linea, Flecha_D, Flecha_I, DosPuntos_Doble, Coma,
-    Mayor_que, Mayor_igual_que, Menor_que, Menor_igual_que,Igual_a,And, Or, 
+    Mayor_que, Mayor_igual_que, Menor_que, Menor_igual_que, Igual_a, And, Or, 
     Guarda, Dolar, Lambda, Parentesis_a, Parentesis_c, Llave_a, Llave_c,
     Corchete_a, Corchete_c, ERROR;
 
-non terminal INICIO, EXPRESION, DECLARACION, FUNCION, GUARDAS, CASO, ARGUMENTOS, BLOQUE;
+// Non terminals
+non terminal INICIO, BLOQUE, FUNCION, ARGUMENTOS, EXPRESION, TERM, FACTOR, ATOM, GUARDAS, CASO, IF_ELSE;
 
+// Precedencia de operadores
+precedence left Suma, Resta;
+precedence left Multiplicacion, Division, Modulo;
+precedence right Potencia;
+
+// Start symbol
 start with INICIO;
 
+// The grammar rules
 INICIO ::= BLOQUE;
 
 BLOQUE ::= FUNCION BLOQUE
@@ -38,24 +84,29 @@ FUNCION ::= Identificador ARGUMENTOS Igual EXPRESION Linea;
 ARGUMENTOS ::= Identificador ARGUMENTOS
              | Identificador;
 
-EXPRESION ::= Numero
-            | Identificador;
-            /* prediente de revision esto de aca
-            | EXPRESION Suma EXPRESION
+EXPRESION ::= EXPRESION Suma EXPRESION
             | EXPRESION Resta EXPRESION
-            | EXPRESION Multiplicacion EXPRESION
-            | EXPRESION Division EXPRESION
-            | EXPRESION Modulo EXPRESION
-            | EXPRESION Potencia EXPRESION
-            | Parentesis_a EXPRESION Parentesis_c
-            | Identificador ARGUMENTOS;
-            */
+            | TERM;
 
-GUARDAS ::= Guarda EXPRESION Igual EXPRESION;
+TERM ::= TERM Multiplicacion TERM
+        | TERM Division TERM
+        | TERM Modulo TERM
+        | FACTOR;
 
-CASO ::= Case EXPRESION Of { GUARDAS };
+FACTOR ::= FACTOR Potencia FACTOR
+         | ATOM;
 
-IF ::= If EXPRESION Then EXPRESION Else EXPRESION;
+ATOM ::= Parentesis_a EXPRESION Parentesis_c
+        | Identificador ARGUMENTOS
+        | Numero
+        | Identificador
+        | IF_ELSE
+        | CASO;
 
-%%
+// Guardas y Casos
+IF_ELSE ::= If EXPRESION Then EXPRESION Else EXPRESION;
 
+CASO ::= Case EXPRESION Of Llave_a GUARDAS Llave_c;
+
+GUARDAS ::= Guarda EXPRESION Igual EXPRESION
+          | Guarda EXPRESION Igual EXPRESION GUARDAS;
