@@ -18,6 +18,7 @@ newline=\r|\n|\r\n
 comentario_linea = "--[^\\n]*"
 comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 
+
 %{
     private int indentLevel = 0;
     private int currentIndent = 0;
