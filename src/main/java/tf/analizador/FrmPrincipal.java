@@ -171,13 +171,13 @@ public class FrmPrincipal extends JFrame {
 			                    {resultado += "Numero\t\t" + " " + lexer.lexeme + nuevaLinea;}			                    
 			                    
 			                case Flecha_D ->
-			                	{resultado += "Flecha Derecha\t\t" + " " + lexer.lexeme + nuevaLinea;}			                
+			                	{resultado += "Flecha Derecha\t" + " " + lexer.lexeme + nuevaLinea;}			                
 			                	
 			                case Flecha_I ->
-			                	{resultado += "Flecha izquierda\t\t" + " " + lexer.lexeme + nuevaLinea;}
+			                	{resultado += "Flecha izquierda\t" + " " + lexer.lexeme + nuevaLinea;}
 			                
 			                case DosPuntos_Doble ->
-			                	{resultado += "Dos puntos doble\t\t" + " " + lexer.lexeme + nuevaLinea;}
+			                	{resultado += "Dos puntos doble\t" + " " + lexer.lexeme + nuevaLinea;}
 
 			                case Coma ->
 			                	{resultado += "Coma\t\t" + " " + lexer.lexeme + nuevaLinea;}
@@ -195,7 +195,7 @@ public class FrmPrincipal extends JFrame {
 			                	{resultado += "Menor Igual que\t\t" + " " + lexer.lexeme + nuevaLinea;}
 			                			                
 			                case Igual_a ->
-			                	{resultado += "Comparacion igualdad\t\t" + " " + lexer.lexeme + nuevaLinea;}
+			                	{resultado += "Comparacion igualdad\t" + " " + lexer.lexeme + nuevaLinea;}
 			                
 			                case And ->
 			                	{resultado += "Op. And\t\t" + " " + lexer.lexeme + nuevaLinea;}
@@ -213,10 +213,10 @@ public class FrmPrincipal extends JFrame {
 			                	{resultado += "Op. funcion lambda\t\t" + " " + lexer.lexeme + nuevaLinea;}
 			                			                
 			                case Parentesis_a ->
-			                	{resultado += "Parentesis apertura\t\t" + " " + lexer.lexeme + nuevaLinea;}
+			                	{resultado += "Parentesis apertura\t" + " " + lexer.lexeme + nuevaLinea;}
 			                
 			                case Parentesis_c ->
-			                	{resultado += "Parentesis cierre\t\t" + " " + lexer.lexeme + nuevaLinea;}
+			                	{resultado += "Parentesis cierre\t" + " " + lexer.lexeme + nuevaLinea;}
 			                
 			                case Llave_a ->
 			                	{resultado += "Llave apertura\t\t" + " " + lexer.lexeme + nuevaLinea;}
@@ -225,11 +225,14 @@ public class FrmPrincipal extends JFrame {
 			                	{resultado += "Llave cierre\t\t" + " " + lexer.lexeme + nuevaLinea;}
 			                
 			                case Corchete_a ->
-			                	{resultado += "Corchete apertura\t\t" + " " + lexer.lexeme + nuevaLinea;}
+			                	{resultado += "Corchete apertura\t" + " " + lexer.lexeme + nuevaLinea;}
 			                
 			                case Corchete_c ->
 			                	{resultado += "Corchete cierre\t\t" + " " + lexer.lexeme + nuevaLinea;}
 			                
+			                case Cadena ->
+		                    {resultado += "Cadena\t\t" + " " + lexer.lexeme + nuevaLinea;}	
+			                	
 			                case ERROR ->
 			                    {resultado += "ERROR\t\t" + " " + lexer.lexeme + nuevaLinea;}
 			                    
@@ -250,29 +253,30 @@ public class FrmPrincipal extends JFrame {
 		
 		JButton btnAnalizarSintactico = new JButton("Analizar - Sintactico");
 		btnAnalizarSintactico.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				String ST = txtAnalizar.getText();
-				Sintax s = new Sintax(new tf.analizador.LexerCup(new StringReader(ST)));
-				
-				try {
-					s.parse();
-					txtResultado_Sintactico.setText("Analisis realizado correctamente");
-					txtResultado_Sintactico.setForeground(new Color(25, 111, 61));
-				} catch (Exception ex) {
-					Symbol sym = s.getS();
-					Boolean errorDetectado = s.errorD();
-					if (sym!=null && errorDetectado==true) {
-						txtResultado_Sintactico.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: "
-								+ (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
-						txtResultado_Sintactico.setForeground(Color.red);						
-					} else {
-						txtResultado_Sintactico.setText("Analisis realizado correctamente");
-						txtResultado_Sintactico.setForeground(new Color(25, 111, 61));
-					}
-				}
-				 			
-			}
+		    public void actionPerformed(ActionEvent e) {
+		        String ST = txtAnalizar.getText(); // Verifica que txtAnalizar se obtenga correctamente
+		        System.out.println("Texto a analizar: " + ST); // Verifica en consola que el texto se está capturando correctamente
+		        
+		        // Aquí continua tu lógica de análisis sintáctico
+		        Sintax s = new Sintax(new tf.analizador.LexerCup(new StringReader(ST)));
+		        
+		        try {
+		            s.parse();
+		            txtResultado_Sintactico.setText("Análisis realizado correctamente");
+		            txtResultado_Sintactico.setForeground(new Color(25, 111, 61));
+		        } catch (Exception ex) {
+		            Symbol sym = s.getS();
+		            Boolean errorDetectado = s.errorD();
+		            if (sym != null && errorDetectado) {
+		                txtResultado_Sintactico.setText("Error de sintaxis. Línea: " + (sym.right + 1) + " Columna: "
+		                        + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+		                txtResultado_Sintactico.setForeground(Color.red);						
+		            } else {
+		                txtResultado_Sintactico.setText("Análisis realizado correctamente");
+		                txtResultado_Sintactico.setForeground(new Color(25, 111, 61));
+		            }
+		        }
+		    }
 		});
 		btnAnalizarSintactico.setBounds(10, 479, 414, 23);
 		contentPane.add(btnAnalizarSintactico);		

@@ -27,6 +27,7 @@ public class sym {
   public static final int Division = 20;
   public static final int Int = 12;
   public static final int Menor_igual_que = 33;
+  public static final int Cadena = 46;
   public static final int Parentesis_c = 41;
   public static final int Mayor_que = 30;
   public static final int Flecha_I = 27;
@@ -41,7 +42,7 @@ public class sym {
   public static final int Dolar = 38;
   public static final int Igual_a = 34;
   public static final int Char = 14;
-  public static final int ERROR = 46;
+  public static final int ERROR = 47;
   public static final int Case = 8;
   public static final int Menor_que = 32;
   public static final int Identificador = 23;
@@ -102,6 +103,7 @@ public class sym {
   "Llave_c",
   "Corchete_a",
   "Corchete_c",
+  "Cadena",
   "ERROR"
   };
 }

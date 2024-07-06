@@ -18,7 +18,6 @@ newline=\r|\n|\r\n
 comentario_linea = "--[^\\n]*"
 comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 
-
 %{
     private int indentLevel = 0;
     private int currentIndent = 0;
@@ -31,20 +30,24 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 {espacio}               { if (newLine) { currentIndent += yytext().length(); } }
 {comentario_linea}      { /* Comentario de una línea */ }
 {comentario_multilinea} { /* Comentario multilínea */ }
+
 "let"                   { return new Symbol(sym.Let, yychar, yyline, yytext()); }
 "in"                    { return new Symbol(sym.In, yychar, yyline, yytext()); }
 "where"                 { return new Symbol(sym.Where, yychar, yyline, yytext()); }
-"if"                    { return new Symbol(sym.If, yychar, yyline, yytext()); }
+"if"|"If"               { return new Symbol(sym.If, yychar, yyline, yytext()); }
 "then"                  { return new Symbol(sym.Then, yychar, yyline, yytext()); }
 "else"                  { return new Symbol(sym.Else, yychar, yyline, yytext()); }
 "case"                  { return new Symbol(sym.Case, yychar, yyline, yytext()); }
 "of"                    { return new Symbol(sym.Of, yychar, yyline, yytext()); }
 "data"                  { return new Symbol(sym.Data, yychar, yyline, yytext()); }
 "type"                  { return new Symbol(sym.Type, yychar, yyline, yytext()); }
-"int"                   { return new Symbol(sym.Int, yychar, yyline, yytext()); }
-"double"                { return new Symbol(sym.Double, yychar, yyline, yytext()); }
-"char"                  { return new Symbol(sym.Char, yychar, yyline, yytext()); }
-"bool"                  { return new Symbol(sym.Bool, yychar, yyline, yytext()); }
+
+"int"|"Int"
+|"Integer"|"integer"    { return new Symbol(sym.Int, yychar, yyline, yytext()); }
+
+"double"|"Double"       { return new Symbol(sym.Double, yychar, yyline, yytext()); }
+"char"|"Char"           { return new Symbol(sym.Char, yychar, yyline, yytext()); }
+"bool"|"Bool"           { return new Symbol(sym.Bool, yychar, yyline, yytext()); }
 "="                     { return new Symbol(sym.Igual, yychar, yyline, yytext()); }
 "+"                     { return new Symbol(sym.Suma, yychar, yyline, yytext()); }
 "-"                     { return new Symbol(sym.Resta, yychar, yyline, yytext()); }
@@ -52,8 +55,6 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "/"                     { return new Symbol(sym.Division, yychar, yyline, yytext()); }
 "%"                     { return new Symbol(sym.Modulo, yychar, yyline, yytext()); }
 "^"                     { return new Symbol(sym.Potencia, yychar, yyline, yytext()); }
-{L}({L}|{D})*           { return new Symbol(sym.Identificador, yychar, yyline, yytext()); }
-("-"{D}+) | {D}+        { return new Symbol(sym.Numero, yychar, yyline, yytext()); }
 "->"                    { return new Symbol(sym.Flecha_D, yychar, yyline, yytext()); }
 "<-"                    { return new Symbol(sym.Flecha_I, yychar, yyline, yytext()); }
 "::"                    { return new Symbol(sym.DosPuntos_Doble, yychar, yyline, yytext()); }
@@ -74,6 +75,13 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "}"                     { return new Symbol(sym.Llave_c, yychar, yyline, yytext()); }
 "["                     { return new Symbol(sym.Corchete_a, yychar, yyline, yytext()); }
 "]"                     { return new Symbol(sym.Corchete_c, yychar, yyline, yytext()); }
-"\\{[ \t]*"             { indentLevel = currentIndent; newLine = false; return new Symbol(sym.Llave_a, yychar, yyline, yytext()); }
-"[ \t]*\\}"             { indentLevel = 0; newLine = true; return new Symbol(sym.Llave_c, yychar, yyline, yytext()); }
-.                       { return new Symbol(sym.ERROR, yychar, yyline, yytext()); }
+
+
+\"[^\"]*\"     			{ return new Symbol(sym.Cadena, yychar, yyline, yytext()); }
+
+{L}({L}|{D})*           { return new Symbol(sym.Identificador, yychar, yyline, yytext()); }
+
+("-"?{D}+)          	{ return new Symbol(sym.Numero, yychar, yyline, yytext()); }
+{D}+                	{ return new Symbol(sym.Numero, yychar, yyline, yytext()); }
+
+.                       { return new Symbol(sym.ERROR, yychar, yyline, yytext()); } // Token de error para cualquier otra cosa

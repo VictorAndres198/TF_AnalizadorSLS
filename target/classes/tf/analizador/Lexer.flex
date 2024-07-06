@@ -30,17 +30,20 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "let"                   { lexeme = yytext(); return Let; }
 "in"                    { lexeme = yytext(); return In; }
 "where"                 { lexeme = yytext(); return Where; }
-"if"                    { lexeme = yytext(); return If; }
+"if"|"If"               { lexeme = yytext(); return If; }
 "then"                  { lexeme = yytext(); return Then; }
 "else"                  { lexeme = yytext(); return Else; }
 "case"                  { lexeme = yytext(); return Case; }
 "of"                    { lexeme = yytext(); return Of; }
 "data"                  { lexeme = yytext(); return Data; }
 "type"                  { lexeme = yytext(); return Type; }
-"int"                   { lexeme = yytext(); return Int; }
-"double"                { lexeme = yytext(); return Double; }
-"char"                  { lexeme = yytext(); return Char; }
-"bool"                  { lexeme = yytext(); return Bool; }
+
+"int"|"Int"
+|"Integer"|"integer"	{ lexeme = yytext(); return Int; }
+
+"double"|"Double"       { lexeme = yytext(); return Double; }
+"char"|"Char"           { lexeme = yytext(); return Char; }
+"bool"|"Bool"           { lexeme = yytext(); return Bool; }
 "="                     { lexeme = yytext(); return Igual; }
 "+"                     { lexeme = yytext(); return Suma; }
 "-"                     { lexeme = yytext(); return Resta; }
@@ -48,11 +51,11 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "/"                     { lexeme = yytext(); return Division; }
 "%"                     { lexeme = yytext(); return Modulo; }
 "^"                     { lexeme = yytext(); return Potencia; }
-{L}({L}|{D})*           { lexeme = yytext(); return Identificador; }
-("-"{D}+) | {D}+        { lexeme = yytext(); return Numero; }
 "->"        			{ lexeme = yytext(); return Flecha_D; }
 "<-"        			{ lexeme = yytext(); return Flecha_I; }
+
 "::"        			{ lexeme = yytext(); return DosPuntos_Doble; }
+
 ","        				{ lexeme = yytext(); return Coma; }
 ">"    					{ lexeme = yytext(); return Mayor_que; }
 ">="    				{ lexeme = yytext(); return Mayor_igual_que; }
@@ -70,4 +73,12 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "}"    					{ lexeme = yytext(); return Llave_c; }
 "["    					{ lexeme = yytext(); return Corchete_a; }
 "]"    					{ lexeme = yytext(); return Corchete_c; }
+
+\"[^\"]*\"     			{ lexeme = yytext(); return Cadena; }
+
+{L}({L}|{D})*           { lexeme = yytext(); return Identificador; }
+
+("-"?{D}+)          	{ lexeme = yytext(); return Numero; }
+{D}+                	{ lexeme = yytext(); return Numero; }
+
 .                       { return ERROR; }

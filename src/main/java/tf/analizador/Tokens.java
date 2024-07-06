@@ -45,5 +45,6 @@ public enum Tokens {
     Llave_c,
     Corchete_a,
     Corchete_c,
+    Cadena,
     ERROR
 }

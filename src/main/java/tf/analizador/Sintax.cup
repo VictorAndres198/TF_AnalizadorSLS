@@ -52,26 +52,24 @@ parser code {:
     }
 :};
 
-// Terminals (tokens returned by the scanner)
 terminal Let, In, Where, If, Then, Else, Case, Of, Data, Type, Int, Double, Char, Bool,
     Igual, Suma, Resta, Multiplicacion, Division, Modulo, Potencia,
     Identificador, Numero, Linea, Flecha_D, Flecha_I, DosPuntos_Doble, Coma,
     Mayor_que, Mayor_igual_que, Menor_que, Menor_igual_que, Igual_a, And, Or, 
     Guarda, Dolar, Lambda, Parentesis_a, Parentesis_c, Llave_a, Llave_c,
-    Corchete_a, Corchete_c, ERROR;
+    Corchete_a, Corchete_c, Cadena, ERROR;
 
-// Non terminals
-non terminal INICIO, BLOQUE, FUNCION, ARGUMENTOS, EXPRESION, TERM, FACTOR, ATOM, GUARDAS, CASO, IF_ELSE;
+non terminal INICIO, BLOQUE, FUNCION, ARGUMENTOS, EXPRESION, TERM, FACTOR, ATOM, GUARDAS, CASO, IF_ELSE, TIPO, TipoBase;
 
-// Precedencia de operadores
 precedence left Suma, Resta;
 precedence left Multiplicacion, Division, Modulo;
 precedence right Potencia;
+precedence left Igual_a, Mayor_que, Mayor_igual_que, Menor_que, Menor_igual_que;
+precedence left And, Or;
+precedence right DosPuntos_Doble; 
 
-// Start symbol
 start with INICIO;
 
-// The grammar rules
 INICIO ::= BLOQUE;
 
 BLOQUE ::= FUNCION BLOQUE
@@ -86,6 +84,14 @@ ARGUMENTOS ::= Identificador ARGUMENTOS
 
 EXPRESION ::= EXPRESION Suma EXPRESION
             | EXPRESION Resta EXPRESION
+            | EXPRESION Igual_a EXPRESION
+            | EXPRESION Mayor_que EXPRESION
+            | EXPRESION Mayor_igual_que EXPRESION
+            | EXPRESION Menor_que EXPRESION
+            | EXPRESION Menor_igual_que EXPRESION
+            | EXPRESION And EXPRESION
+            | EXPRESION Or EXPRESION
+            | EXPRESION DosPuntos_Doble TIPO
             | TERM;
 
 TERM ::= TERM Multiplicacion TERM
@@ -103,10 +109,18 @@ ATOM ::= Parentesis_a EXPRESION Parentesis_c
         | IF_ELSE
         | CASO;
 
-// Guardas y Casos
 IF_ELSE ::= If EXPRESION Then EXPRESION Else EXPRESION;
 
 CASO ::= Case EXPRESION Of Llave_a GUARDAS Llave_c;
 
 GUARDAS ::= Guarda EXPRESION Igual EXPRESION
-          | Guarda EXPRESION Igual EXPRESION GUARDAS;
+          | Guarda Cadena Igual EXPRESION
+          | Guarda EXPRESION Igual Cadena
+          | Guarda Cadena Igual Cadena
+          | Guarda EXPRESION Igual EXPRESION GUARDAS
+          | Guarda Cadena Igual EXPRESION GUARDAS
+          | Guarda EXPRESION Igual Cadena GUARDAS
+          | Guarda Cadena Igual Cadena GUARDAS;
+          
+TIPO ::= Identificador DosPuntos_Doble TipoBase;
+TipoBase ::= Int | Double | Char | Bool;
