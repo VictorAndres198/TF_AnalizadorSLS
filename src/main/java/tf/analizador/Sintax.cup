@@ -79,7 +79,11 @@ INICIO ::= BLOQUE;
 BLOQUE ::= FUNCION BLOQUE
          | FUNCION
          | Linea BLOQUE
-         | Linea;
+         | Linea         
+         | Let EXPRESION Linea BLOQUE
+         | Let EXPRESION Linea
+         | Let EXPRESION Igual EXPRESION Linea BLOQUE
+         | Let EXPRESION Igual EXPRESION Linea;
 
 FUNCION ::= Identificador ARGUMENTOS Igual EXPRESION Linea
          |  Identificador DosPuntos_Doble TIPO Linea
