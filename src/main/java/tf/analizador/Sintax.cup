@@ -53,20 +53,24 @@ parser code {:
 :};
 
 terminal Let, In, Where, If, Then, Else, Case, Of, Data, Type, Int, Double, Char, Bool,
-    Igual, Suma, Resta, Multiplicacion, Division, Modulo, Potencia,
-    Identificador, Numero, Linea, Flecha_D, Flecha_I, DosPuntos_Doble, Coma,
+    Igual, Suma, Resta, Multiplicacion, Division, Modulo, Potencia, Flecha_GD,
+    Identificador, Linea, Flecha_D, Flecha_I, DosPuntos_Doble, Coma,
     Mayor_que, Mayor_igual_que, Menor_que, Menor_igual_que, Igual_a, And, Or, 
     Guarda, Dolar, Lambda, Parentesis_a, Parentesis_c, Llave_a, Llave_c,
     Corchete_a, Corchete_c, Cadena, ERROR;
 
-non terminal INICIO, BLOQUE, FUNCION, ARGUMENTOS, EXPRESION, TERM, FACTOR, ATOM, GUARDAS, CASO, IF_ELSE, TIPO, TipoBase;
+non terminal INICIO, BLOQUE, FUNCION, ARGUMENTOS, EXPRESION, TERM, FACTOR, ATOM, GUARDAS,
+    CASO, IF_ELSE, TIPO, TIPOSIMPLE, CAMPO,CAMPOS, TIPOFUNCION, TIPOESTRUCTURADEDATOS;
 
 precedence left Suma, Resta;
 precedence left Multiplicacion, Division, Modulo;
 precedence right Potencia;
 precedence left Igual_a, Mayor_que, Mayor_igual_que, Menor_que, Menor_igual_que;
 precedence left And, Or;
-precedence right DosPuntos_Doble; 
+precedence left Flecha_D;
+precedence right Cadena;
+precedence right Linea;
+precedence right Int,Double,Identificador;
 
 start with INICIO;
 
@@ -77,10 +81,38 @@ BLOQUE ::= FUNCION BLOQUE
          | Linea BLOQUE
          | Linea;
 
-FUNCION ::= Identificador ARGUMENTOS Igual EXPRESION Linea;
+FUNCION ::= Identificador ARGUMENTOS Igual EXPRESION Linea
+         |  Identificador DosPuntos_Doble TIPO Linea
+         |  Identificador DosPuntos_Doble TIPO Parentesis_a Parentesis_c Linea
+         |  Identificador ARGUMENTOS GUARDAS Linea
+         |  Identificador Igual EXPRESION Linea;
 
 ARGUMENTOS ::= Identificador ARGUMENTOS
+             | Identificador
+             | Int ARGUMENTOS
+             | Int
+             | Double ARGUMENTOS
+             | Double;
+
+TIPO ::= TIPOSIMPLE
+       | TIPOFUNCION
+       | TIPOESTRUCTURADEDATOS;
+
+TIPOSIMPLE ::= Int
+             | Double
+             | Char
+             | Bool
              | Identificador;
+
+TIPOFUNCION ::= TIPO Flecha_D TIPO
+			 |  TIPO Identificador Flecha_GD TIPO;
+
+TIPOESTRUCTURADEDATOS ::= Data Identificador Llave_a CAMPOS Llave_c;
+
+CAMPOS ::= CAMPO
+         | CAMPOS Coma CAMPO;
+
+CAMPO ::= Identificador DosPuntos_Doble TIPO;
 
 EXPRESION ::= EXPRESION Suma EXPRESION
             | EXPRESION Resta EXPRESION
@@ -91,7 +123,12 @@ EXPRESION ::= EXPRESION Suma EXPRESION
             | EXPRESION Menor_igual_que EXPRESION
             | EXPRESION And EXPRESION
             | EXPRESION Or EXPRESION
-            | EXPRESION DosPuntos_Doble TIPO
+            | EXPRESION Flecha_D EXPRESION
+            | EXPRESION Flecha_D Cadena EXPRESION
+			| EXPRESION Flecha_D Cadena
+            | Linea EXPRESION Linea EXPRESION
+            | Linea EXPRESION Linea
+            | Linea EXPRESION
             | TERM;
 
 TERM ::= TERM Multiplicacion TERM
@@ -104,23 +141,28 @@ FACTOR ::= FACTOR Potencia FACTOR
 
 ATOM ::= Parentesis_a EXPRESION Parentesis_c
         | Identificador ARGUMENTOS
-        | Numero
         | Identificador
+        | Int
+        | Double
+        | Identificador Parentesis_a EXPRESION Parentesis_c
+        | Identificador Parentesis_a EXPRESION Parentesis_c Parentesis_a EXPRESION Parentesis_c
         | IF_ELSE
         | CASO;
 
 IF_ELSE ::= If EXPRESION Then EXPRESION Else EXPRESION;
 
-CASO ::= Case EXPRESION Of Llave_a GUARDAS Llave_c;
+CASO ::= Case EXPRESION Of Llave_a GUARDAS Llave_c
+	  |  Case EXPRESION Of Llave_a EXPRESION Llave_c
+	  |  Case EXPRESION Of EXPRESION;
 
 GUARDAS ::= Guarda EXPRESION Igual EXPRESION
           | Guarda Cadena Igual EXPRESION
           | Guarda EXPRESION Igual Cadena
           | Guarda Cadena Igual Cadena
-          | Guarda EXPRESION Igual EXPRESION GUARDAS
-          | Guarda Cadena Igual EXPRESION GUARDAS
-          | Guarda EXPRESION Igual Cadena GUARDAS
-          | Guarda Cadena Igual Cadena GUARDAS;
-          
-TIPO ::= Identificador DosPuntos_Doble TipoBase;
-TipoBase ::= Int | Double | Char | Bool;
+          | GUARDAS Guarda EXPRESION Igual EXPRESION
+          | GUARDAS Guarda Cadena Igual EXPRESION
+          | GUARDAS Guarda EXPRESION Igual Cadena
+          | GUARDAS Guarda Cadena Igual Cadena
+          | Linea GUARDAS Linea GUARDAS
+          | Linea GUARDAS Linea
+          | Linea GUARDAS;

@@ -263,7 +263,7 @@ public class FrmPrincipal extends JFrame {
 		        try {
 		            s.parse();
 		            txtResultado_Sintactico.setText("Análisis realizado correctamente");
-		            txtResultado_Sintactico.setForeground(new Color(25, 111, 61));
+		            txtResultado_Sintactico.setForeground(new Color(25, 111, 61));		            
 		        } catch (Exception ex) {
 		            Symbol sym = s.getS();
 		            Boolean errorDetectado = s.errorD();

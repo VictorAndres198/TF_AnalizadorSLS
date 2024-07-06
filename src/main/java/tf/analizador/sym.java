@@ -14,6 +14,7 @@ public class sym {
   public static final int Coma = 29;
   public static final int Llave_c = 43;
   public static final int Double = 13;
+  public static final int Flecha_GD = 23;
   public static final int Llave_a = 42;
   public static final int If = 5;
   public static final int Of = 9;
@@ -45,14 +46,13 @@ public class sym {
   public static final int ERROR = 47;
   public static final int Case = 8;
   public static final int Menor_que = 32;
-  public static final int Identificador = 23;
+  public static final int Identificador = 24;
   public static final int Data = 10;
   public static final int Resta = 18;
   public static final int Type = 11;
   public static final int Bool = 15;
   public static final int Multiplicacion = 19;
   public static final int Where = 4;
-  public static final int Numero = 24;
   public static final int Suma = 17;
   public static final int DosPuntos_Doble = 28;
   public static final int Igual = 16;
@@ -80,8 +80,8 @@ public class sym {
   "Division",
   "Modulo",
   "Potencia",
+  "Flecha_GD",
   "Identificador",
-  "Numero",
   "Linea",
   "Flecha_D",
   "Flecha_I",

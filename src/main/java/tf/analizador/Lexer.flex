@@ -12,6 +12,13 @@ newline=\r|\n|\r\n
 comentario_linea = "--[^\\n]*"
 comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 
+Double = ("."{D}+)|({D}+("."{D}*)?([eE][+-]?{D}+)?)
+Bool = "true"|"True"|"False"|"false"
+Char = \'[^'\\]\'
+Char2 = \'\\[nrt'\"\\]\'
+DPD= "::"
+Int = ({D}+|"-"?{D}+)
+
 %{
 	private int indentLevel = 0;
     private int currentIndent = 0;
@@ -33,17 +40,24 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "if"|"If"               { lexeme = yytext(); return If; }
 "then"                  { lexeme = yytext(); return Then; }
 "else"                  { lexeme = yytext(); return Else; }
-"case"                  { lexeme = yytext(); return Case; }
-"of"                    { lexeme = yytext(); return Of; }
-"data"                  { lexeme = yytext(); return Data; }
+"case"|"Case" 			{ lexeme = yytext(); return Case; }
+"of"|"Of"               { lexeme = yytext(); return Of; }
+"data"|"Data"           { lexeme = yytext(); return Data; }
 "type"                  { lexeme = yytext(); return Type; }
 
 "int"|"Int"
-|"Integer"|"integer"	{ lexeme = yytext(); return Int; }
+|"Integer"|"integer"
+|{Int}					{ lexeme = yytext(); return Int; }
 
-"double"|"Double"       { lexeme = yytext(); return Double; }
-"char"|"Char"           { lexeme = yytext(); return Char; }
-"bool"|"Bool"           { lexeme = yytext(); return Bool; }
+"double"|"Double"
+|{Double}		        { lexeme = yytext(); return Double; }
+
+"char"|"Char"
+|{Char}|{Char2}         { lexeme = yytext(); return Char; }
+
+"bool"|"Bool"
+|{Bool}		            { lexeme = yytext(); return Bool; }
+
 "="                     { lexeme = yytext(); return Igual; }
 "+"                     { lexeme = yytext(); return Suma; }
 "-"                     { lexeme = yytext(); return Resta; }
@@ -51,10 +65,13 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "/"                     { lexeme = yytext(); return Division; }
 "%"                     { lexeme = yytext(); return Modulo; }
 "^"                     { lexeme = yytext(); return Potencia; }
+
+"=>"					{ lexeme = yytext(); return Flecha_GD; }
+
 "->"        			{ lexeme = yytext(); return Flecha_D; }
 "<-"        			{ lexeme = yytext(); return Flecha_I; }
 
-"::"        			{ lexeme = yytext(); return DosPuntos_Doble; }
+"::"|{DPD}     			{ lexeme = yytext(); return DosPuntos_Doble; }
 
 ","        				{ lexeme = yytext(); return Coma; }
 ">"    					{ lexeme = yytext(); return Mayor_que; }
@@ -77,8 +94,5 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 \"[^\"]*\"     			{ lexeme = yytext(); return Cadena; }
 
 {L}({L}|{D})*           { lexeme = yytext(); return Identificador; }
-
-("-"?{D}+)          	{ lexeme = yytext(); return Numero; }
-{D}+                	{ lexeme = yytext(); return Numero; }
 
 .                       { return ERROR; }

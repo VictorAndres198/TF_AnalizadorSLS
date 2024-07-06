@@ -25,6 +25,7 @@ public enum Tokens {
     Identificador,
     Numero,
     Linea,
+    Flecha_GD,
     Flecha_D,  //->
     Flecha_I, // <-
     DosPuntos_Doble, //::

@@ -18,6 +18,13 @@ newline=\r|\n|\r\n
 comentario_linea = "--[^\\n]*"
 comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 
+Double = ("."{D}+)|({D}+("."{D}*)?([eE][+-]?{D}+)?)
+Bool = "true"|"True"|"False"|"false"
+Char = \'[^'\\]\'
+Char2 = \'\\[nrt'\"\\]\'
+DPD = "::"
+Int = ({D}+|"-"?{D}+)
+
 %{
     private int indentLevel = 0;
     private int currentIndent = 0;
@@ -37,17 +44,23 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "if"|"If"               { return new Symbol(sym.If, yychar, yyline, yytext()); }
 "then"                  { return new Symbol(sym.Then, yychar, yyline, yytext()); }
 "else"                  { return new Symbol(sym.Else, yychar, yyline, yytext()); }
-"case"                  { return new Symbol(sym.Case, yychar, yyline, yytext()); }
-"of"                    { return new Symbol(sym.Of, yychar, yyline, yytext()); }
-"data"                  { return new Symbol(sym.Data, yychar, yyline, yytext()); }
+"case"|"Case" 			{ return new Symbol(sym.Case, yychar, yyline, yytext()); }
+"of"|"Of"               { return new Symbol(sym.Of, yychar, yyline, yytext()); }
+"data"|"Data"           { return new Symbol(sym.Data, yychar, yyline, yytext()); }
 "type"                  { return new Symbol(sym.Type, yychar, yyline, yytext()); }
 
 "int"|"Int"
-|"Integer"|"integer"    { return new Symbol(sym.Int, yychar, yyline, yytext()); }
+|"Integer"|"integer"
+|{Int}				    { return new Symbol(sym.Int, yychar, yyline, yytext()); }
 
-"double"|"Double"       { return new Symbol(sym.Double, yychar, yyline, yytext()); }
-"char"|"Char"           { return new Symbol(sym.Char, yychar, yyline, yytext()); }
-"bool"|"Bool"           { return new Symbol(sym.Bool, yychar, yyline, yytext()); }
+"double"|"Double"
+|{Double}       		{ return new Symbol(sym.Double, yychar, yyline, yytext()); }
+
+"char"|"Char"|{Char}
+|{Char2}    			{ return new Symbol(sym.Char, yychar, yyline, yytext()); }
+
+"bool"|"Bool"|{Bool}    { return new Symbol(sym.Bool, yychar, yyline, yytext()); }
+
 "="                     { return new Symbol(sym.Igual, yychar, yyline, yytext()); }
 "+"                     { return new Symbol(sym.Suma, yychar, yyline, yytext()); }
 "-"                     { return new Symbol(sym.Resta, yychar, yyline, yytext()); }
@@ -55,9 +68,12 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 "/"                     { return new Symbol(sym.Division, yychar, yyline, yytext()); }
 "%"                     { return new Symbol(sym.Modulo, yychar, yyline, yytext()); }
 "^"                     { return new Symbol(sym.Potencia, yychar, yyline, yytext()); }
+
+"=>"					{ return new Symbol(sym.Flecha_GD, yychar, yyline, yytext()); }
+
 "->"                    { return new Symbol(sym.Flecha_D, yychar, yyline, yytext()); }
 "<-"                    { return new Symbol(sym.Flecha_I, yychar, yyline, yytext()); }
-"::"                    { return new Symbol(sym.DosPuntos_Doble, yychar, yyline, yytext()); }
+"::"|{DPD}              { return new Symbol(sym.DosPuntos_Doble, yychar, yyline, yytext()); }
 ","                     { return new Symbol(sym.Coma, yychar, yyline, yytext()); }
 ">"                     { return new Symbol(sym.Mayor_que, yychar, yyline, yytext()); }
 ">="                    { return new Symbol(sym.Mayor_igual_que, yychar, yyline, yytext()); }
@@ -80,8 +96,5 @@ comentario_multilinea = "\\{-[\\s\\S]*?-\\}"
 \"[^\"]*\"     			{ return new Symbol(sym.Cadena, yychar, yyline, yytext()); }
 
 {L}({L}|{D})*           { return new Symbol(sym.Identificador, yychar, yyline, yytext()); }
-
-("-"?{D}+)          	{ return new Symbol(sym.Numero, yychar, yyline, yytext()); }
-{D}+                	{ return new Symbol(sym.Numero, yychar, yyline, yytext()); }
 
 .                       { return new Symbol(sym.ERROR, yychar, yyline, yytext()); } // Token de error para cualquier otra cosa
