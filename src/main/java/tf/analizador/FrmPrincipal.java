@@ -171,7 +171,10 @@ public class FrmPrincipal extends JFrame {
 			                    {resultado += "Numero\t\t" + " " + lexer.lexeme + nuevaLinea;}			                    
 			                    
 			                case Flecha_D ->
-			                	{resultado += "Flecha Derecha\t" + " " + lexer.lexeme + nuevaLinea;}			                
+			                	{resultado += "Flecha Derecha\t" + " " + lexer.lexeme + nuevaLinea;}
+			                
+			                case Flecha_GD ->
+		                		{resultado += "Flecha Grande Derecha\t" + " " + lexer.lexeme + nuevaLinea;}
 			                	
 			                case Flecha_I ->
 			                	{resultado += "Flecha izquierda\t" + " " + lexer.lexeme + nuevaLinea;}
